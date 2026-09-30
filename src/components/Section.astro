@@ -1,0 +1,67 @@
+---
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  judul: string;
+  deskripsi?: string;
+  align?: 'left' | 'center';
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const {
+  id,
+  eyebrow,
+  judul,
+  deskripsi,
+  align = 'center',
+  tone = 'light',
+  class: className = '',
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section id={id} class:list={['scroll-mt-24 py-16 sm:py-20 lg:py-24', className]}>
+  <div class="container-page">
+    <div
+      data-reveal
+      class:list={[
+        'max-w-3xl',
+        align === 'center' && 'mx-auto text-center',
+      ]}
+    >
+      {
+        eyebrow && (
+          <span class:list={['eyebrow', dark && 'bg-white/10 text-brand-200 ring-white/20']}>
+            <span class="h-1.5 w-1.5 rounded-full bg-current" />
+            {eyebrow}
+          </span>
+        )
+      }
+      <h2
+        class:list={[
+          'mt-4 text-3xl leading-tight sm:text-4xl lg:text-[2.6rem]',
+          dark && 'text-white',
+        ]}
+      >
+        {judul}
+      </h2>
+      {
+        deskripsi && (
+          <p
+            class:list={[
+              'mt-4 text-base leading-relaxed sm:text-lg',
+              dark ? 'text-slate-300' : 'text-slate-600',
+            ]}
+          >
+            {deskripsi}
+          </p>
+        )
+      }
+      <slot name="aksi" />
+    </div>
+
+    <slot />
+  </div>
+</section>

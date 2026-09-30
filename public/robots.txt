@@ -1,0 +1,10 @@
+user-agent: *
+allow: /
+
+# Sumber daya statis tidak perlu diindeks
+disallow: /img/
+
+# Akses halaman admin/form jika dibutuhkan
+# disallow: /admin/
+
+sitemap: https://adararelief.com/sitemap-index.xml

@@ -1,0 +1,98 @@
+---
+import Icon from './Icon.astro';
+import type { Program } from '../data/program';
+
+interface Props {
+  program: Program;
+  index?: number;
+  anchorId?: string;
+}
+
+const { program, index = 0, anchorId } = Astro.props;
+
+const SDG_META: Record<number, { label: string; bg: string; fg: string }> = {
+  1: { label: 'No Poverty', bg: 'bg-rose-100', fg: 'text-rose-700' },
+  2: { label: 'Tanpa Kelaparan', bg: 'bg-amber-100', fg: 'text-amber-700' },
+  3: { label: 'Kesehatan', bg: 'bg-emerald-100', fg: 'text-emerald-700' },
+  4: { label: 'Pendidikan', bg: 'bg-sky-100', fg: 'text-sky-700' },
+  5: { label: 'Gender', bg: 'bg-fuchsia-100', fg: 'text-fuchsia-700' },
+  6: { label: 'Air Bersih', bg: 'bg-cyan-100', fg: 'text-cyan-700' },
+  8: { label: 'Pekerjaan Layak', bg: 'bg-indigo-100', fg: 'text-indigo-700' },
+  10: { label: 'Kesenjangan', bg: 'bg-violet-100', fg: 'text-violet-700' },
+  11: { label: 'Komunitas', bg: 'bg-teal-100', fg: 'text-teal-700' },
+  12: { label: 'Konsumsi', bg: 'bg-orange-100', fg: 'text-orange-700' },
+  13: { label: 'Iklim', bg: 'bg-lime-100', fg: 'text-lime-700' },
+  16: { label: 'Damai', bg: 'bg-blue-100', fg: 'text-blue-700' },
+  17: { label: 'Kemitraan', bg: 'bg-slate-100', fg: 'text-slate-700' },
+};
+---
+
+<article
+  id={anchorId}
+  class="group relative flex h-full scroll-mt-28 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-300 hover:shadow-2xl hover:shadow-slate-200/60"
+  data-reveal
+  data-reveal-delay={Math.min(index * 70, 420)}
+>
+  <!-- Aksen garis atas -->
+  <div
+    class="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-brand-600 to-teal-400 transition-transform duration-500 group-hover:scale-x-100"
+  >
+  </div>
+
+  <div class="flex items-start justify-between gap-3">
+    <div
+      class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 text-2xl ring-1 ring-brand-200/70 transition-transform duration-300 group-hover:scale-110"
+      aria-hidden="true"
+    >
+      {program.ikon}
+    </div>
+    <span
+      class:list={[
+        'chip shrink-0',
+        program.kategori === 'Penyaluran'
+          ? 'bg-amber-100 text-amber-800'
+          : 'bg-indigo-100 text-indigo-800',
+      ]}
+    >
+      {program.kategori}
+    </span>
+  </div>
+
+  <h3 class="mt-5 text-lg leading-snug font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+    {program.nama}
+  </h3>
+  <p class="mt-1.5 text-sm font-semibold text-brand-700">{program.ringkas}</p>
+  <p class="mt-3 text-sm leading-relaxed text-slate-600">{program.ringkasan}</p>
+
+  <ul class="mt-5 space-y-2.5">
+    {
+      program.poin.map((poin) => (
+        <li class="flex items-start gap-2.5 text-sm text-slate-600">
+          <span class="mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+            <Icon name="check" class="h-3 w-3" />
+          </span>
+          <span>{poin}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="mt-auto flex flex-wrap items-center gap-1.5 pt-5">
+    <span class="text-[0.65rem] font-bold tracking-wider text-slate-400 uppercase">
+      SDGs
+    </span>
+    {
+      program.sdg.map((no) => {
+        const meta = SDG_META[no];
+        return meta ? (
+          <span
+            class:list={['chip px-2 py-0.5 text-[0.65rem]', meta.bg, meta.fg]}
+            title={`SDG ${no}: ${meta.label}`}
+          >
+            {no}
+          </span>
+        ) : null;
+      })
+    }
+  </div>
+</article>

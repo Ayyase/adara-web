@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { NAV } from '../data/site';
+---
+
+<BaseLayout title="Halaman Tidak Ditemukan" noindex description="Halaman yang Anda cari tidak ditemukan.">
+  <section class="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4">
+    <div class="pointer-events-none absolute inset-0 grid-pattern opacity-60"></div>
+    <div class="pointer-events-none absolute -top-24 left-1/4 h-80 w-80 rounded-full bg-brand-600/25 blur-[100px]"></div>
+
+    <div class="container-page relative py-28 text-center">
+      <p class="font-display text-7xl font-extrabold text-white/10 sm:text-9xl">404</p>
+      <h1 class="mt-4 text-3xl font-extrabold text-white sm:text-4xl">
+        Ups, halaman ini <span class="text-gradient-light">tidak ditemukan</span>
+      </h1>
+      <p class="mx-auto mt-4 max-w-md text-slate-400">
+        Halaman yang Anda tuju mungkin telah dipindah atau dihapus. Kembali ke beranda dan lanjutkan
+        perjalanan Anda.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a href="/" class="btn-accent">
+          <Icon name="arrow-right" class="h-4 w-4 rotate-180" />
+          Kembali ke Beranda
+        </a>
+        <a href="/program" class="btn-ghost-light">Lihat Program</a>
+      </div>
+
+      <div class="mt-12 grid gap-3 sm:grid-cols-3">
+        {NAV.slice(0, 6).map((item) => (
+          <a
+            href={item.href}
+            class="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm font-bold text-slate-300 backdrop-blur transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-white"
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

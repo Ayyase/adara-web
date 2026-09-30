@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import KartuBerita from '../components/KartuBerita.astro';
+import KartuProgram from '../components/KartuProgram.astro';
+import { beritaTerbaru, KATEGORI_BERITA, BERITA } from '../data/berita';
+import { PROGRAM_EDUKASI } from '../data/program';
+
+const featured = BERITA.find((b) => b.featured) ?? BERITA[0];
+const lainnya = beritaTerbaru(5).filter((b) => b.slug !== featured?.slug).slice(0, 4);
+const pendidikan = PROGRAM_EDUKASI;
+const kategoriChip: Record<string, string> = {
+  'Penyaluran': 'bg-amber-100 text-amber-800',
+  'Edukasi': 'bg-indigo-100 text-indigo-800',
+  'Komunitas': 'bg-emerald-100 text-emerald-800',
+  'Siaran Pers': 'bg-sky-100 text-sky-800',
+  'Laporan': 'bg-violet-100 text-violet-800',
+};
+---
+
+<BaseLayout
+  title="Berita & Laporan"
+  description="Berita terbaru Adara Relief International: penyaluran, program edukasi, kegiatan komunitas, siaran pers, dan laporan program."
+  image="/img/kemanjaman.jpg"
+>
+  <!-- ============ HERO HALAMAN ============ -->
+  <section class="relative overflow-hidden bg-slate-950 pt-32 pb-16 sm:pt-40 sm:pb-20">
+    <div class="pointer-events-none absolute inset-0 grid-pattern opacity-70"></div>
+    <div class="pointer-events-none absolute -top-24 right-1/4 h-72 w-72 rounded-full bg-indigo-600/20 blur-[100px]"></div>
+
+    <div class="container-page relative">
+      <div class="max-w-3xl">
+        <nav class="animate-fade-up flex items-center gap-2 text-xs font-semibold text-slate-400">
+          <a href="/" class="transition hover:text-brand-300">Beranda</a>
+          <span aria-hidden="true">/</span>
+          <span class="text-brand-300">Berita</span>
+        </nav>
+
+        <h1 class="mt-6 animate-fade-up text-4xl leading-tight font-extrabold text-white sm:text-5xl" style="animation-delay: 80ms">
+          Berita, laporan &amp; <span class="text-gradient-light">cerita lapangan</span>
+        </h1>
+        <p class="mt-5 animate-fade-up max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg" style="animation-delay: 160ms">
+          Pembaruan berkala dari Adara, mitra program, dan komunitas penggerak di seluruh Indonesia.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FILTER ============ -->
+  <div class="no-print sticky top-16 z-30 border-b border-slate-200 bg-white/90 py-3 backdrop-blur-lg lg:top-[68px]">
+    <div class="container-page flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <Icon name="filter" class="h-4 w-4 shrink-0 text-slate-400" />
+      {KATEGORI_BERITA.map((k) => (
+        <button
+          type="button"
+          data-filter={k}
+          class:list={[
+            'chip shrink-0 whitespace-nowrap transition',
+            k === 'Semua' ? 'bg-brand-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+          ]}
+        >
+          {k}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- ============ FEATURED ============ -->
+  <section class="bg-sand-100 py-16 sm:py-20">
+    <div class="container-page">
+      <div data-reveal class="flex items-center justify-between gap-4">
+        <div>
+          <span class="eyebrow">Sorotan</span>
+          <h2 class="mt-3 text-3xl leading-tight font-extrabold sm:text-4xl">Utama</h2>
+        </div>
+        <span class="hidden text-xs font-bold tracking-widest text-slate-400 uppercase sm:block">
+          {BERITA.length} artikel
+        </span>
+      </div>
+
+      <div class="mt-10">
+        <KartuBerita berita={featured} featured index={0} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GRID BERITA (filterable) ============ -->
+  <section class="py-16 sm:py-20">
+    <div class="container-page">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" id="news-grid">
+        {lainnya.map((b, i) => (
+          <div data-kategori={b.kategori}>
+            <KartuBerita berita={b} index={i} />
+          </div>
+        ))}
+      </div>
+
+      <div id="news-empty" class="mt-12 hidden text-center">
+        <p class="text-4xl">🗞️</p>
+        <p class="mt-3 font-bold text-slate-700">Belum ada artikel di kategori ini</p>
+        <p class="mt-1 text-sm text-slate-500">Segera kembali untuk pembaruan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AJAKAN PROGRAM EDUKASI ============ -->
+  <section class="bg-slate-950 py-16 sm:py-20">
+    <div class="container-page">
+      <div data-reveal class="max-w-3xl">
+        <span class="eyebrow bg-white/10 text-brand-200 ring-white/20">Jangan hanya baca</span>
+        <h2 class="mt-4 text-3xl leading-tight text-white sm:text-4xl">Ikut Serta dalam Program Edukasi</h2>
+        <p class="mt-4 text-slate-300">Dari Maqdis Academy hingga Satu Rumah Satu Aqsa — ada banyak cara untuk belajar dan berpartisipasi.</p>
+      </div>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {pendidikan.slice(0, 3).map((p, i) => <KartuProgram program={p} index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const btns = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+    const grid = document.getElementById('news-grid');
+    const empty = document.getElementById('news-empty');
+    const activeCls = 'chip shrink-0 whitespace-nowrap transition bg-brand-700 text-white';
+    const idleCls =
+      'chip shrink-0 whitespace-nowrap transition bg-slate-100 text-slate-600 hover:bg-slate-200';
+
+    const applyFilter = (active: string) => {
+      let visible = 0;
+      grid?.querySelectorAll<HTMLElement>('[data-kategori]').forEach((el) => {
+        const cat = el.dataset.kategori ?? '';
+        const ok = active === 'Semua' || cat === active;
+        el.classList.toggle('hidden', !ok);
+        if (ok) visible++;
+      });
+      if (empty) empty.classList.toggle('hidden', visible > 0);
+      history.replaceState(null, '', active === 'Semua' ? '/berita' : `/berita#${encodeURIComponent(active)}`);
+    };
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        btns.forEach((b) => (b.className = b === btn ? activeCls : idleCls));
+        applyFilter(btn.dataset.filter ?? 'Semua');
+      });
+    });
+  </script>
+</BaseLayout>

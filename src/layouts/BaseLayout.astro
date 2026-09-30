@@ -1,0 +1,171 @@
+---
+import '../styles/global.css';
+import Seo from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  keywords?: string[];
+  publishedTime?: string;
+  modifiedTime?: string;
+  noindex?: boolean;
+  hideChrome?: boolean;
+}
+
+const { hideChrome = false, ...seo } = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: SITE.name,
+  legalName: SITE.legalName,
+  alternateName: SITE.shortName,
+  url: SITE.url,
+  logo: `${SITE.url}/img/logo.png`,
+  image: `${SITE.url}/img/og-default.jpg`,
+  description: SITE.description,
+  slogan: SITE.tagline,
+  foundingDate: SITE.foundedDate,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Jl. Moh. Kahfi 1, RT.6/RW.1, Cipedak, Kec. Jagakarsa',
+    addressLocality: 'Jakarta Selatan',
+    addressRegion: 'DKI Jakarta',
+    postalCode: '12630',
+    addressCountry: 'ID',
+  },
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      telephone: SITE.phone,
+      contactType: 'customer support',
+      areaServed: 'ID',
+      availableLanguage: ['Indonesian', 'English', 'Arabic'],
+    },
+  ],
+  sameAs: [
+    'http://t.me/adararelief',
+    'https://www.instagram.com/adararelief/',
+    'https://web.facebook.com/AdaraReliefInternational/',
+    'https://twitter.com/adararelief',
+    'https://www.youtube.com/c/AdaraReliefInternational',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="id" class="scroll-pt-24">
+  <head>
+    <Seo {...seo} />
+    <link rel="icon" type="image/png" href="/img/logo.png" />
+    <link rel="apple-touch-icon" href="/img/logo.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#0f766e" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  </head>
+  <body class="min-h-screen">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-brand-700 focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
+    >
+      Lompat ke konten utama
+    </a>
+
+    {!hideChrome && <Header />}
+    <main id="main">
+      <slot />
+    </main>
+    {!hideChrome && <Footer />}
+
+    <button
+      id="back-to-top"
+      type="button"
+      aria-label="Kembali ke atas"
+      class="no-print fixed right-5 bottom-5 z-40 flex h-11 w-11 translate-y-20 items-center justify-center rounded-full bg-brand-700 text-white opacity-0 shadow-xl shadow-brand-900/30 transition-all duration-300 hover:bg-brand-800 focus-visible:translate-y-0 focus-visible:opacity-100"
+    >
+      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <script>
+      // Animasi muncul saat scroll
+      const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (revealEls.length) {
+        if (!('IntersectionObserver' in window)) {
+          revealEls.forEach((el) => el.classList.add('is-visible'));
+        } else {
+          const io = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  const el = entry.target as HTMLElement;
+                  const delay = Number(el.dataset.revealDelay ?? 0);
+                  setTimeout(() => el.classList.add('is-visible'), delay);
+                  io.unobserve(el);
+                }
+              });
+            },
+            { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
+          );
+          revealEls.forEach((el) => io.observe(el));
+        }
+      }
+
+      // Counter animasi
+      const counters = document.querySelectorAll<HTMLElement>('[data-count-to]');
+      if (counters.length) {
+        const animate = (el: HTMLElement) => {
+          const target = Number(el.dataset.countTo ?? 0);
+          const dur = 1400;
+          const start = performance.now();
+          const tick = (now: number) => {
+            const p = Math.min((now - start) / dur, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(target * eased).toLocaleString('id-ID');
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        };
+        const cio = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                animate(e.target as HTMLElement);
+                cio.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.5 }
+        );
+        counters.forEach((c) => cio.observe(c));
+      }
+
+      // Tombol back to top
+      const top = document.getElementById('back-to-top');
+      if (top) {
+        const onScroll = () => {
+          const show = window.scrollY > 600;
+          top.classList.toggle('opacity-0', !show);
+          top.classList.toggle('translate-y-20', !show);
+          top.classList.toggle('opacity-100', show);
+          top.classList.toggle('translate-y-0', show);
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        top.addEventListener('click', () =>
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        );
+      }
+    </script>
+  </body>
+</html>

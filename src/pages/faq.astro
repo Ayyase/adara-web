@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { FAQ, GRUP_FAQ } from '../data/faq';
+import { SITE, REK_ONGKOS } from '../data/site';
+
+const grupUrutan: (keyof typeof GRUP_FAQ)[] = ['umum', 'donasi', 'program', 'komunitas'];
+const total = FAQ.length;
+---
+
+<BaseLayout
+  title="FAQ — Pertanyaan yang Sering Diajukan"
+  description="Jawaban atas pertanyaan umum tentang Adara Relief International: apa itu Adara, cara donasi, program bantuan, dan cara bergabung dengan komunitas."
+  image="/img/og-default.jpg"
+>
+  <!-- ============ HERO HALAMAN ============ -->
+  <section class="relative overflow-hidden bg-slate-950 pt-32 pb-16 sm:pt-40 sm:pb-20">
+    <div class="pointer-events-none absolute inset-0 grid-pattern opacity-70"></div>
+    <div class="pointer-events-none absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-brand-600/25 blur-[100px]"></div>
+
+    <div class="container-page relative">
+      <div class="max-w-3xl">
+        <nav class="animate-fade-up flex items-center gap-2 text-xs font-semibold text-slate-400">
+          <a href="/" class="transition hover:text-brand-300">Beranda</a>
+          <span aria-hidden="true">/</span>
+          <span class="text-brand-300">FAQ</span>
+        </nav>
+        <h1 class="mt-6 animate-fade-up text-4xl leading-tight font-extrabold text-white sm:text-5xl" style="animation-delay: 80ms">
+          Pertanyaan yang <span class="text-gradient-light">sering diajukan</span>
+        </h1>
+        <p class="mt-5 animate-fade-up max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg" style="animation-delay: 160ms">
+          {total} jawaban tentang Adara — dari sejarah, donasi, program, hingga komunitas. Masih bingung?
+          Hubungi kami via WhatsApp.
+        </p>
+        <a
+          href={`${SITE.phoneHref}?text=${encodeURIComponent('Halo Adara, saya punya pertanyaan.')}`}
+          target="_blank"
+          rel="noopener"
+          class="btn-accent mt-8 inline-flex animate-fade-up"
+          style="animation-delay: 240ms"
+        >
+          <Icon name="whatsapp" class="h-4 w-4" />
+          Tanya via WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ACCORDION ============ -->
+  <section class="bg-sand-100 py-16 sm:py-20">
+    <div class="container-page max-w-4xl">
+      <div class="flex flex-wrap gap-2" data-reveal>
+        {grupUrutan.map((g) => (
+          <a
+            href={`#${g}`}
+            class="chip bg-white text-slate-600 ring-1 ring-slate-200 transition hover:bg-brand-50 hover:text-brand-700 hover:ring-brand-300"
+          >
+            <span aria-hidden="true">{GRUP_FAQ[g].ikon}</span>
+            {GRUP_FAQ[g].label}
+          </a>
+        ))}
+      </div>
+
+      <div class="mt-10 space-y-14">
+        {grupUrutan.map((g) => {
+          const items = FAQ.filter((f) => f.grup === g);
+          return (
+            <div id={g} key={g} class="scroll-mt-28">
+              <h2 class="flex items-center gap-3 text-xl font-extrabold sm:text-2xl" data-reveal>
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-700 text-lg text-white">
+                  {GRUP_FAQ[g].ikon}
+                </span>
+                {GRUP_FAQ[g].label}
+                <span class="chip bg-brand-100 text-brand-800">{items.length}</span>
+              </h2>
+
+              <div class="mt-5 space-y-3">
+                {items.map((f, i) => (
+                  <div
+                    class="faq-item group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-md"
+                    data-reveal
+                    data-reveal-delay={i * 40}
+                  >
+                    <h3>
+                      <button
+                        type="button"
+                        class="faq-toggle flex w-full items-center justify-between gap-4 px-5 py-4 text-left sm:px-6"
+                        aria-expanded="false"
+                        aria-controls={`faq-panel-${g}-${i}`}
+                        id={`faq-btn-${g}-${i}`}
+                      >
+                        <span class="text-sm font-bold text-slate-800 sm:text-base">{f.q}</span>
+                        <Icon
+                          name="chevron-down"
+                          class="faq-icon h-5 w-5 shrink-0 text-brand-600 transition-transform duration-300"
+                        />
+                      </button>
+                    </h3>
+                    <div
+                      id={`faq-panel-${g}-${i}`}
+                      role="region"
+                      aria-labelledby={`faq-btn-${g}-${i}`}
+                      class="faq-panel max-h-0 overflow-hidden transition-all duration-300 ease-in-out"
+                    >
+                      <p class="px-5 pb-5 text-sm leading-relaxed text-slate-600 sm:px-6 sm:text-base">
+                        {f.a}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- ============ REKENING MINI ============ -->
+      <div class="mt-16 rounded-3xl border border-brand-200 bg-gradient-to-br from-brand-50 to-white p-6 sm:p-8" data-reveal>
+        <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-lg font-extrabold sm:text-xl">Rekening resmi donasi</h2>
+            <p class="mt-1.5 text-sm text-slate-600">a.n. {SITE.legalName}</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {REK_ONGKOS.slice(0, 4).map((r) => (
+              <button
+                type="button"
+                data-copy={r.no}
+                class="group flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 transition hover:border-brand-400"
+              >
+                <span class="text-xs font-bold text-slate-400 uppercase">{r.bank}</span>
+                <span class="font-mono text-sm font-bold text-slate-800">{r.no}</span>
+                <span class="text-xs text-slate-400 transition group-hover:text-brand-700">⧉</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Accordion FAQ
+    const toggles = document.querySelectorAll<HTMLButtonElement>('.faq-toggle');
+    const panels = document.querySelectorAll<HTMLElement>('.faq-panel');
+    const icons = document.querySelectorAll<HTMLElement>('.faq-icon');
+
+    toggles.forEach((btn, idx) => {
+      btn.addEventListener('click', () => {
+        const panel = panels[idx];
+        const icon = icons[idx];
+        const open = btn.getAttribute('aria-expanded') === 'true';
+
+        // Tutup semua
+        toggles.forEach((b, i) => {
+          b.setAttribute('aria-expanded', 'false');
+          panels[i].style.maxHeight = '0px';
+          icons[i].classList.remove('rotate-180');
+        });
+
+        if (!open) {
+          btn.setAttribute('aria-expanded', 'true');
+          panel.style.maxHeight = `${panel.scrollHeight}px`;
+          icon.classList.add('rotate-180');
+        }
+      });
+    });
+
+    // Salin nomor rekening
+    const copyBtns = document.querySelectorAll<HTMLButtonElement>('[data-copy]');
+    copyBtns.forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+          const span = btn.querySelector('span:last-child');
+          if (span) {
+            span.textContent = '✓';
+            setTimeout(() => (span.textContent = '⧉'), 1500);
+          }
+        } catch {}
+      });
+    });
+  </script>
+</BaseLayout>

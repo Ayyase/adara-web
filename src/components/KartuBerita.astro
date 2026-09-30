@@ -1,0 +1,101 @@
+---
+import Icon from './Icon.astro';
+import type { Berita } from '../data/berita';
+
+interface Props {
+  berita: Berita;
+  index?: number;
+  featured?: boolean;
+}
+
+const { berita, index = 0, featured = false } = Astro.props;
+
+const kategoriStyle: Record<Berita['kategori'], string> = {
+  Penyaluran: 'bg-amber-100 text-amber-800',
+  Edukasi: 'bg-indigo-100 text-indigo-800',
+  Komunitas: 'bg-emerald-100 text-emerald-800',
+  'Siaran Pers': 'bg-sky-100 text-sky-800',
+  Laporan: 'bg-violet-100 text-violet-800',
+};
+---
+
+<article
+  class:list={[
+    'group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-300 hover:shadow-2xl hover:shadow-slate-200/60',
+    featured && 'lg:flex-row',
+  ]}
+  data-reveal
+  data-reveal-delay={Math.min(index * 80, 400)}
+>
+  <!-- Cover -->
+  <div
+    class:list={[
+      'relative overflow-hidden bg-gradient-to-br',
+      berita.gradien,
+      featured ? 'lg:w-[45%] lg:shrink-0' : 'aspect-[16/10]',
+    ]}
+  >
+    <img
+      src={berita.gambar}
+      alt=""
+      width="600"
+      height="400"
+      loading="lazy"
+      decoding="async"
+      class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/10 to-transparent"></div>
+    <span
+      class:list={[
+        'chip absolute top-4 left-4 backdrop-blur',
+        kategoriStyle[berita.kategori],
+      ]}
+    >
+      {berita.kategori}
+    </span>
+    {
+      featured && (
+        <span class="absolute bottom-4 left-4 chip bg-white/90 text-slate-800 backdrop-blur">
+          <Icon name="sparkle" class="h-3 w-3" />
+          Pilihan Redaksi
+        </span>
+      )
+    }
+  </div>
+
+  <!-- Konten -->
+  <div class="flex flex-1 flex-col p-5 sm:p-6">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+      <time datetime={berita.tanggalISO} class="flex items-center gap-1.5">
+        <Icon name="calendar" class="h-3.5 w-3.5" />
+        {berita.tanggal}
+      </time>
+      <span class="flex items-center gap-1.5">
+        <Icon name="clock" class="h-3.5 w-3.5" />
+        {berita.baca} menit baca
+      </span>
+    </div>
+
+    <h3
+      class:list={[
+        'mt-3 leading-snug font-extrabold text-slate-900 transition-colors group-hover:text-brand-700',
+        featured ? 'text-xl sm:text-2xl' : 'text-base',
+      ]}
+    >
+      {berita.judul}
+    </h3>
+
+    <p class="mt-2.5 line-clamp-3 text-sm leading-relaxed text-slate-600">{berita.ringkas}</p>
+
+    <div class="mt-auto pt-5">
+      <a
+        href={`/berita/${berita.slug}`}
+        class="inline-flex items-center gap-1.5 text-sm font-bold text-brand-700 transition hover:gap-2.5"
+        aria-label={`Baca selengkapnya: ${berita.judul}`}
+      >
+        Baca selengkapnya
+        <Icon name="arrow-right" class="h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,179 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-50: #f0fdfa;
+  --color-brand-100: #ccfbf1;
+  --color-brand-200: #99f6e4;
+  --color-brand-300: #5eead4;
+  --color-brand-400: #2dd4bf;
+  --color-brand-500: #14b8a6;
+  --color-brand-600: #0d9488;
+  --color-brand-700: #0f766e;
+  --color-brand-800: #115e59;
+  --color-brand-900: #134e4a;
+  --color-brand-950: #042f2e;
+
+  --color-sand-50: #fdfcfa;
+  --color-sand-100: #f8f6f1;
+  --color-sand-200: #efebe1;
+  --color-sand-300: #e0d9c9;
+
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-shimmer: shimmer 2.5s linear infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-sand-50 text-slate-800 antialiased;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display font-extrabold tracking-tight text-slate-900;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-3 outline-brand-600;
+  }
+
+  ::selection {
+    @apply bg-brand-600 text-white;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-200;
+    @apply bg-brand-700 text-white shadow-lg shadow-brand-700/25;
+    @apply hover:-translate-y-0.5 hover:bg-brand-800 hover:shadow-xl hover:shadow-brand-800/30;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-600;
+  }
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-200;
+    @apply bg-amber-400 text-slate-900 shadow-lg shadow-amber-400/30;
+    @apply hover:-translate-y-0.5 hover:bg-amber-300;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-600;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-200;
+    @apply border-2 border-slate-200 bg-white/80 text-slate-800 backdrop-blur;
+    @apply hover:-translate-y-0.5 hover:border-brand-500 hover:text-brand-700;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-600;
+  }
+  .btn-ghost-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-200;
+    @apply border-2 border-white/30 bg-white/10 text-white backdrop-blur-md;
+    @apply hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/20;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-600;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-200;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-600;
+  }
+
+  .card {
+    @apply rounded-2xl border border-slate-200/80 bg-white shadow-sm;
+    @apply transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-xl hover:shadow-slate-200/60;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-1.5 text-xs font-bold tracking-wide text-brand-700 uppercase ring-1 ring-brand-200;
+  }
+
+  .link-underline {
+    @apply relative after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100;
+  }
+
+  .prose-adara {
+    @apply text-[1.0625rem] leading-relaxed text-slate-600;
+  }
+  .prose-adara p + p { @apply mt-4; }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-br from-brand-700 via-brand-600 to-teal-500 bg-clip-text text-transparent;
+  }
+  .text-gradient-light {
+    @apply bg-gradient-to-br from-white via-brand-100 to-brand-300 bg-clip-text text-transparent;
+  }
+  .grid-pattern {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* Animasi muncul saat scroll */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal] { opacity: 1; transform: none; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+}
